@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE `Drawer` MODIFY `close_date` DATETIME(3) NULL,
+    MODIFY `sale_money` INTEGER NULL DEFAULT 0,
+    MODIFY `exp_drawer` INTEGER NULL DEFAULT 0,
+    MODIFY `act_drawer` INTEGER NULL DEFAULT 0,
+    MODIFY `dif` INTEGER NULL DEFAULT 0;

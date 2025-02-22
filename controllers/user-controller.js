@@ -6,7 +6,7 @@ const prisma = require("../configs/prisma");
 exports.listUsers = async (req, res, next) => {
   // code
   try {
-    const users = await prisma.profile.findMany({
+    const users = await prisma.user.findMany({
       omit: {
         password: true,
       },
@@ -23,7 +23,7 @@ exports.updateRole = async (req, res, next) => {
     const { id, role } = req.body;
     console.log(id, role);
     // console.log(typeof id)
-    const updated = await prisma.profile.update({
+    const updated = await prisma.user.update({
       where: { id: Number(id) },
       data: { role: role },
     });
@@ -37,7 +37,7 @@ exports.updateRole = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deleted = await prisma.profile.delete({
+    const deleted = await prisma.user.delete({
       where: {
         id: Number(id),
       },

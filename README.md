@@ -259,9 +259,10 @@ exports.register = async (req, res, next) => {
   try {
     // Step 1 req.body
     const { email, firstname, lastname, password, confirmPassword } = req.body;
+
     // Step 2 validate
     // Step 3 Check already
-    const checkEmail = await prisma.profile.findFirst({
+    const checkEmail = await prisma.user.findFirst({
       where: {
         email: email,
       },
@@ -274,7 +275,7 @@ exports.register = async (req, res, next) => {
     const hashedPassword = bcrypt.hashSync(password, 10);
     // console.log(hashedPassword);
     // Step 5 Insert to DB
-    const profile = await prisma.profile.create({
+    const profile = await prisma.user.create({
       data: {
         email: email,
         firstname: firstname,
@@ -302,7 +303,7 @@ exports.login = async (req, res, next) => {
     // Step 1 req.body
     const { email, password } = req.body;
     // Step 2 Check email and password
-    const profile = await prisma.profile.findFirst({
+    const profile = await prisma.user.findFirst({
       where: {
         email: email,
       },

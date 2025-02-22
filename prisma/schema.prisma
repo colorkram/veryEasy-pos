@@ -13,18 +13,85 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Profile {
+model User {
   id        Int      @id @default(autoincrement())
   email     String
   firstname String
   lastname  String
   role      Role     @default(USER)
   password  String
+  shopname  String @default("quick Service")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  categories Category[] @relation("UserCategories")
+  menus      Menu[]     @relation("UserMenus")
+  drawers    Drawer[]   @relation("UserDrawers") // Added relation for user and drawer
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String
+  user_id   Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation("UserCategories", fields: [user_id], references: [id])
+  menus     Menu[]   @relation("CategoryMenus")
+}
+
+model Bill {
+  id            Int      @id @default(autoincrement())
+  total         Int
+  change        Int
+  payment_amount Int
+  menu_id       Int
+  drawer_id     Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  items         Item[]   @relation("BillItems")
+}
+
+model Menu {
+  id         Int      @id @default(autoincrement())
+  name       String
+  price      Int
+  img        String
+  category_id Int
+  user_id    Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation("UserMenus", fields: [user_id], references: [id])
+  category   Category @relation("CategoryMenus", fields: [category_id], references: [id])
+  items      Item[]    // One-to-many relation with Item
+}
+
+model Item {
+  id         Int      @id @default(autoincrement())
+  price      Int
+  menu_id    Int     // Foreign key for Menu
+  bill_id    Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  bill       Bill     @relation("BillItems", fields: [bill_id], references: [id])
+  menu       Menu     @relation(fields: [menu_id], references: [id])  // Many-to-one relation with Menu
+}
+
+model Drawer {
+  id           Int      @id @default(autoincrement())
+  open_date    DateTime @default(now())
+  close_date   DateTime?  // เปลี่ยนเป็น nullable
+  start_money  Int  
+  sale_money   Int? @default(0)  
+  exp_drawer   Int? @default(0)
+  act_drawer   Int? @default(0)
+  dif          Int? @default(0)
+  user_id      Int  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation("UserDrawers", fields: [user_id], references: [id]) // Added relation to User
 }
 
 enum Role {
   USER
   ADMIN
 }
+
